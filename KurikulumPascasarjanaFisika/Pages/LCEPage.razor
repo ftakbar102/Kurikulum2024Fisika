@@ -1,0 +1,220 @@
+﻿@page "/matakuliah/LCE"
+
+@inject IKatalogService KatalogService
+@inject IAddressService AddressService
+@inject ISessionStorageService Storage
+
+
+<div class="col-lg-12 px-0 py-8 control-section">
+    @if (KatalogMataKuliah is null)
+    {
+        <LoadingPageComponent />
+    }
+    else
+    {
+        <div class="content-wrapper mx-8">
+            <div class="row my-4">
+                <MudCard Outlined="true" Class="border-2" Elevation="2">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h5" Class="avenir fs-3 fw-bold">LCE dan Mata Kuliah</MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                </MudCard>
+            </div>
+            <div class="row my-4">
+                <div class="col-lg-6">
+                    <MudSelect T="string" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" Margin="Margin.Dense"
+                               Class="custom-form-input" Dense="true" Label="Program Studi" Value="ProgramStudi"
+                               ValueChanged="async value => await ChangeProgramStudi(value)">
+                        @{
+                            foreach (var prodi in AllProdi!)
+                            {
+                                <MudSelectItem Value=@prodi />
+                            }
+                        }
+                    </MudSelect>
+                </div>
+                <div class="col-lg-6">
+                    <MudSelect T="string" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" Margin="Margin.Dense"
+                               Class="custom-form-input" Dense="true" Label="Jenis Mata Kuliah" Value="JenisMK"
+                               ValueChanged="value => ChangeJenisMK(value)">
+                        <MudSelectItem Value="@("Semua")" />
+                        <MudSelectItem Value="@("MKWI")" />
+                        <MudSelectItem Value="@("MKWP")" />
+                        <MudSelectItem Value="@("MKPB")" />
+                        <MudSelectItem Value="@("MKOP")" />
+                    </MudSelect>
+                </div>
+            </div>
+            @if (LCEMKFiltered is not null && LCEMKFiltered.Any())
+            {
+                <div class="row my-4">
+                    <MudTable Items="LCEMKFiltered" Dense="true" Hover="true" Bordered="true" Outlined="true" Striped="true" Elevation="2" HeaderClass="header" Class="border-2">
+                        <ToolBarContent>
+                            <MudText Typo="Typo.h6" Class="custom-table-title">LCE Mata Kuliah</MudText>
+                        </ToolBarContent>
+                        <HeaderContent>
+                            <MudTh Class="custom-table-header">Kode</MudTh>
+                            <MudTh Class="custom-table-header">Nama MK</MudTh>
+                            <MudTh Class="custom-table-header">RBL</MudTh>
+                            <MudTh Class="custom-table-header">PBL</MudTh>
+                            <MudTh Class="custom-table-header">Mandiri</MudTh>
+                            <MudTh Class="custom-table-header">Kelompok</MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd Class="custom-table-td" DataLabel="Kode">@context.Key.Kode</MudTd>
+                            <MudTd Class="custom-table-td" DataLabel="Kode">@context.Key.NamaId</MudTd>
+                            @{
+                                foreach (var x in context.Value)
+                                {
+                                    <MudTd Class="custom-table-td text-center">
+                                        @{
+                                            if (x)
+                                            {
+                                                <MudIcon Icon="@Icons.Material.Filled.Close" Size="MudBlazor.Size.Small" />
+                                            }
+                                        }
+
+                                    </MudTd>
+                                }
+                            }
+                        </RowTemplate>
+                    </MudTable>
+                </div>
+            }
+        </div>
+    }
+</div>
+<style>
+    .header {
+        background-color: #212B3E;
+    }
+
+    .custom-table-header {
+        font-size: 12px;
+        font-weight: bold !important;
+        color: white !important;
+    }
+
+    .custom-table-td {
+        font-size: 12px;
+        font-family: Avenir-Demi;
+    }
+
+    .mud-input-control > .mud-input-control-input-container > .mud-input-label-inputcontrol {
+        font-size: 12px;
+    }
+
+    #custom-filter .mud-input {
+        font-size: 10px;
+    }
+
+    .custom-form-input {
+        font-size: 12px;
+    }
+
+        .custom-form-input p {
+            font-size: 12px;
+        }
+
+    .mud-input-control > .mud-input-control-input-container > .mud-input-label-outlined.mud-input-label-inputcontrol {
+        line-height: 1;
+    }
+
+    .selected {
+        background-color: #354052 !important;
+    }
+
+        .selected > td {
+            color: white !important;
+        }
+
+            .selected > td .mud-input {
+                color: white !important;
+            }
+
+</style>
+
+@code{
+    private IEnumerable<MataKuliah>? KatalogMataKuliah { get; set; }
+    public string ProgramStudi { get; set; } = string.Empty;
+    public string JenisMK { get; set; } = "Semua";
+    public Dictionary<string, IEnumerable<string>> KategoriLCE = new();
+    public Dictionary<MataKuliah, List<bool>>? LCEMK = new();
+    public Dictionary<MataKuliah, List<bool>>? LCEMKFiltered = new();
+    private IEnumerable<string>? AllProdi { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        AllProdi = AddressService.GetAllProgramStudi();
+        var getProdi = await Storage.GetItemAsync<string>("Program Studi LCE");
+
+        ProgramStudi = getProdi is not null ? getProdi : "Magister Fisika";
+        JenisMK = "Semua";
+        KatalogMataKuliah = await KatalogService.GetKatalog(ProgramStudi);
+
+
+        KategoriLCE.Add("RBL", ["riset", "rbl", "research"]);
+        KategoriLCE.Add("PBL", ["problem", "pbl", "masalah"]);
+        KategoriLCE.Add("Mandiri", ["tugas mandiri", "kuliah mandiri", "mandiri"]);
+        KategoriLCE.Add("Kelompok", ["diskusi kelompok", "kelompok"]);
+
+        AssignKategoriLCE();
+        LCEMKFiltered = LCEMK!.Select(x => x).ToDictionary();
+    }
+
+    public async Task ChangeProgramStudi(string value)
+    {
+        ProgramStudi = value;
+        await Storage.SetItemAsStringAsync("Program Studi LCE", ProgramStudi);
+        JenisMK = "Semua";
+        KatalogMataKuliah = await KatalogService.GetKatalog(ProgramStudi);
+        LCEMK!.Clear();
+        AssignKategoriLCE();
+        LCEMKFiltered = LCEMK!.Select(x => x).ToDictionary();
+
+    }
+
+    public void ChangeJenisMK(string value)
+    {
+        JenisMK = value;
+
+        if (value == "Semua")
+        {
+            LCEMKFiltered = LCEMK is null ? null : LCEMK.Select(x => x).ToDictionary();
+        }
+        else
+        {
+            LCEMKFiltered = LCEMK is not null ? LCEMK.Where(x => x.Key.Jenis == value).ToDictionary() : null;
+        }
+
+    }
+
+    public void AssignKategoriLCE()
+    {
+        foreach(var mk in KatalogMataKuliah!)
+        {
+            var metodes = mk.Metode.Split([',', '/']).Concat(mk.Penilaian.Split([','])).ToList();
+            List<bool> kategori = [];
+
+            foreach(var val in KategoriLCE.Values)
+            {
+                var apakahAda = false;
+                
+                foreach(var kat in val)
+                {
+                    foreach (var met in metodes)
+                    {
+                        apakahAda = apakahAda || met.Contains(kat, StringComparison.OrdinalIgnoreCase);
+                    }
+                    
+                }
+               
+                kategori.Add(apakahAda);
+            }
+
+            LCEMK!.Add(mk, kategori);
+        }
+    }
+}

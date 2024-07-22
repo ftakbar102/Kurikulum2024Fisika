@@ -1,0 +1,30 @@
+﻿<MudPaper Width="250px" Class="bg-transparent py-3 text-light" Elevation="0">
+    <MudNavMenu>
+        <div class="navbar-brand now-light mt-1 text-center">
+            <MudImage Src="img/FisikaLogoText.png" Width="200" />
+        </div>
+        <MudDivider Class="my-2" />
+        <MudNavLink Href="/home" Icon="@Icons.Material.Filled.Home" IconColor="MudBlazor.Color.Surface" Class="custom-nav-item py-1">Home</MudNavLink>
+        <MudNavLink Href="/matakuliah/katalog" Icon="@Icons.Material.Filled.Inventory" IconColor="MudBlazor.Color.Surface" Class="custom-nav-item py-1">Katalog Mata Kuliah</MudNavLink>
+        <MudNavLink Href="/matakuliah/rpmk" Icon="@Icons.Material.Filled.ListAlt" IconColor="MudBlazor.Color.Surface" Class="custom-nav-item py-1">RPMK</MudNavLink>
+        <MudNavLink Href="/matakuliah/capaian" Icon="@Icons.Material.Filled.InsertChartOutlined" IconColor="MudBlazor.Color.Surface" Class="custom-nav-item py-1">Capaian</MudNavLink>
+        <MudNavLink Href="/matakuliah/LCE" Icon="@Icons.Material.Filled.People" IconColor="MudBlazor.Color.Surface" Class="custom-nav-item py-1">LCE</MudNavLink>
+    </MudNavMenu>
+</MudPaper>
+
+<style>
+    .custom-nav-item > a:hover:not(.mud-nav-link-disabled) {
+        background-color: white !important;
+        color: black !important;
+    }
+
+    .mud-navmenu.mud-navmenu-default .mud-nav-link.active:not(.mud-nav-link-disabled) {
+        background-color: white !important;
+        color: black !important;
+    }
+
+    .mud-nav-link:hover:not(.mud-nav-link-disabled) {
+        background-color: white !important;
+        color: black !important;
+    }
+</style>

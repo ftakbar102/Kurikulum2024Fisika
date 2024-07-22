@@ -1,0 +1,170 @@
+﻿@page "/matakuliah/katalog"
+
+@inject IKatalogService KatalogService
+@inject IAddressService AddressService
+@inject ISessionStorageService Storage
+@inject NavigationManager Nav
+
+
+<div class="col-lg-12 px-0 py-8 control-section">
+    @if(KatalogMataKuliah is null)
+    {
+        <LoadingPageComponent/>
+    }
+    else
+    {
+        <div class="content-wrapper mx-8">
+            <div class="row my-4">
+                <MudCard Outlined="true" Class="border-2" Elevation="2">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h5" Class="avenir fs-3 fw-bold">Katalog Mata Kuliah</MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                </MudCard>
+            </div>
+            <div class="row my-4">
+                <div class="col-lg-6">
+                    <MudSelect T="string" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" Margin="Margin.Dense"
+                               Class="custom-form-input" Dense="true" Label="Program Studi" Value="ProgramStudi"
+                               ValueChanged ="async value => await ChangeProgramStudi(value)">
+                        @{
+                            foreach(var prodi in AllProdi!)
+                            {
+                                <MudSelectItem Value=@prodi />
+                            }
+                        }
+                    </MudSelect>
+                </div>
+                <div class="col-lg-6">
+                    <MudTextField T="string" Value="SearchText" Label="Search" Variant="Variant.Outlined" Margin="Margin.Dense" Class="custom-form-input"
+                    HelperText="Kode, Nama MK, Jenis MK" HelperTextOnFocus="true" ValueChanged="value => FilterText(value)"></MudTextField>
+                </div>
+            </div>
+            <div class="row my-4">
+                <MudTable Items="FilteredMataKuliah" Dense="true" Hover="true" Bordered="true" Outlined="true" Elevation="2" HeaderClass="header" Class="border-2">
+                    <HeaderContent>
+                        <MudTh Class="custom-table-header">Kode</MudTh>
+                        <MudTh Class="custom-table-header">Nama MK Id</MudTh>
+                        <MudTh Class="custom-table-header">Nama MK En</MudTh>
+                        <MudTh Class="custom-table-header">SKS</MudTh>
+                        <MudTh Class="custom-table-header">Jenis</MudTh>
+                        <MudTh Class="custom-table-header"></MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd Class="custom-table-td" DataLabel="Kode">@context.Kode</MudTd>
+                        <MudTd Class="custom-table-td" DataLabel="NamaId">@context.NamaId</MudTd>
+                        <MudTd Class="custom-table-td" DataLabel="NamaEn">@context.NamaEn</MudTd>
+                        <MudTd Class="custom-table-td" DataLabel="SKS">@context.Sks</MudTd>
+                        <MudTd Class="custom-table-td" DataLabel="Jenis">@context.Jenis</MudTd>
+                        <MudTd>
+                            <MudTooltip Text="Lihat RPMK">
+                                <MudButton Size="@MudBlazor.Size.Small" Variant="@Variant.Filled" Color="@MudBlazor.Color.Surface"
+                                           OnClick="() => GoToRpmk(context.Kode)">RPMK</MudButton>
+                            </MudTooltip>
+                        </MudTd>
+                    </RowTemplate>
+                </MudTable>
+            </div>
+        </div>   
+    }
+</div>
+
+<style>
+    .header {
+        background-color: #212B3E;
+    }
+
+    .custom-table-header {
+        font-size: 12px;
+        font-weight: bold !important;
+        color: white !important;
+    }
+
+    .custom-table-td {
+        font-size: 12px;
+        font-family: Avenir-Demi;
+    }
+
+    .mud-input-control > .mud-input-control-input-container > .mud-input-label-inputcontrol {
+        font-size: 12px;
+    }
+
+    #custom-filter .mud-input {
+        font-size: 10px;
+    }
+
+    .custom-form-input {
+        font-size: 12px;
+    }
+
+        .custom-form-input p {
+            font-size: 12px;
+        }
+
+    .mud-input-control > .mud-input-control-input-container > .mud-input-label-outlined.mud-input-label-inputcontrol {
+        line-height: 1;
+    }
+
+    .selected {
+        background-color: #354052 !important;
+    }
+
+        .selected > td {
+            color: white !important;
+        }
+
+            .selected > td .mud-input {
+                color: white !important;
+            }
+
+</style>
+
+@code{
+    private IEnumerable<MataKuliah>? KatalogMataKuliah { get; set; }
+    private IEnumerable<MataKuliah>? FilteredMataKuliah { get; set; }
+    private string ProgramStudi { get; set; } = string.Empty;
+    private string SearchText { get; set; } = string.Empty;
+    private IEnumerable<string>? AllProdi { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        AllProdi = AddressService.GetAllProgramStudi();
+        var getProdi = await Storage.GetItemAsync<string>("Program Studi Katalog");
+
+        ProgramStudi = getProdi is not null ? getProdi : "Magister Fisika";
+
+        KatalogMataKuliah = await KatalogService.GetKatalog(ProgramStudi);
+        FilteredMataKuliah = KatalogMataKuliah is null ? null : KatalogMataKuliah.Select(x => x);
+    }
+
+    public async Task ChangeProgramStudi(string value)
+    {
+        ProgramStudi = value;
+        await Storage.SetItemAsStringAsync("Program Studi Katalog", ProgramStudi);
+        KatalogMataKuliah = await KatalogService.GetKatalog(ProgramStudi);
+        FilteredMataKuliah = KatalogMataKuliah is null ? null : KatalogMataKuliah.Select(x => x);
+
+    }
+
+    public void FilterText(string value)
+    {
+        SearchText = value;
+
+        if (KatalogMataKuliah is null)
+            return;
+
+        FilteredMataKuliah = KatalogMataKuliah.Where(x => x.Kode.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
+        x.NamaId.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
+        x.NamaEn.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
+        x.Jenis.Contains(SearchText, StringComparison.OrdinalIgnoreCase));
+    }
+
+    public async void GoToRpmk(string kodeMK)
+    {
+        await Storage.SetItemAsStringAsync("Program Studi Katalog", ProgramStudi);
+        Nav.NavigateTo($"/matakuliah/katalog/{ProgramStudi}/{kodeMK}");
+    }
+
+    
+}

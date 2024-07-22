@@ -1,0 +1,96 @@
+﻿@page "/"
+@page "/home"
+
+@inject IKatalogService KatalogService
+@inject ICapaianService CapaianService
+@inject IAddressService AddressService
+@inject ISessionStorageService Storage
+
+<div class="col-lg-12 px-0 py-8 control-section">
+    @if (KatalogSource is null || CapaianSource is null)
+    {
+        <LoadingPageComponent />
+    }
+    else
+    {
+        <div class="content-wrapper mx-8">
+            <div class="row my-4">
+                <div class="col-lg-6">
+                    <MudSelect T="string" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" Margin="Margin.Dense"
+                               Class="custom-form-input" Dense="true" Label="Program Studi" Value="ProgramStudi"
+                               ValueChanged="async value => await ChangeProgramStudi(value)">
+                        @{
+                            foreach (var prodi in AllProdi!)
+                            {
+                                <MudSelectItem Value=@prodi />
+                            }
+                        }
+                    </MudSelect>
+                </div>
+            </div>
+            <div class="row my-4">
+                <div class="col-lg-6">
+                    <ApexChart @ref="JenisChart" TItem="CustomChartData" Title="Jenis Mata Kuliah">
+                        <ApexPointSeries TItem="CustomChartData" Items="@TransformToChartData(KatalogSource)" Name="Jumlah MK"
+                            XValue="@(e => e.Label)" YValue="@(e => e.Data)" SeriesType="SeriesType.Bar"/>
+                    </ApexChart>
+                </div>
+                <div class="col-lg-6">
+                    <ApexChart @ref="CapaianChart" TItem="CustomChartData" Title="Capaian vs Mata Kuliah">
+                        <ApexPointSeries TItem="CustomChartData" Items="@TransformToChartData(CapaianSource)" Name="Jumlah MK"
+                                         XValue="@(e => e.Label)" YValue="@(e => e.Data)" SeriesType="SeriesType.Bar" Color="#26E7A6" />
+                    </ApexChart>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    public class CustomChartData
+    {
+        public string Label { get; set; } = string.Empty;
+        public int Data { get; set; } 
+    }
+
+    public string ProgramStudi { get; set; } = string.Empty;
+    public Dictionary<string, int>? KatalogSource { get; set; }
+    public Dictionary<string, int>? CapaianSource { get; set; } = new();
+
+    private IEnumerable<string>? AllProdi { get; set; }
+
+    private ApexChart<CustomChartData> JenisChart { get; set; } = new();
+    private ApexChart<CustomChartData> CapaianChart { get; set; } = new();
+
+    protected async override Task OnInitializedAsync()
+    {
+        AllProdi = AddressService.GetAllProgramStudi();
+        var getProdi = await Storage.GetItemAsync<string>("Program Studi Home");
+
+        ProgramStudi = getProdi is not null ? getProdi : "Magister Fisika";
+        KatalogSource = await KatalogService.GetMataKuliahByJenis(ProgramStudi);
+        CapaianSource = await CapaianService.GetCapaianMataKuliah(ProgramStudi);
+
+    }
+
+    public async Task ChangeProgramStudi(string value)
+    {
+        ProgramStudi = value;
+        await Storage.SetItemAsStringAsync("Program Studi Home", ProgramStudi);
+
+        KatalogSource = await KatalogService.GetMataKuliahByJenis(ProgramStudi);
+        CapaianSource = await CapaianService.GetCapaianMataKuliah(ProgramStudi);
+        StateHasChanged();
+        await JenisChart.UpdateSeriesAsync();
+        await CapaianChart.UpdateSeriesAsync();
+    }
+
+    public List<CustomChartData> TransformToChartData(Dictionary<string, int> data)
+    {
+        return data.Select(x => new CustomChartData()
+        {
+            Label = x.Key,
+            Data = x.Value
+        }).ToList();
+    }
+}
