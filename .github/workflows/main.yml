@@ -19,7 +19,7 @@ jobs:
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 6.0.x
+          dotnet-version: 8.0.x
 
       # Publish the site
       - name: Publish
@@ -28,7 +28,6 @@ jobs:
       # Deploy the site
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: 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
+          github-token: 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
           publish_dir: publish/wwwroot
           force_orphan: true
