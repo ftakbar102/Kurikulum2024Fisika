@@ -29,6 +29,6 @@ jobs:
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v4
         with:
-          github_token: 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
+          github_token: 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
           publish_dir: publish/wwwroot
           force_orphan: true
