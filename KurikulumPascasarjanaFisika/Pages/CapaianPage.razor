@@ -47,7 +47,8 @@
                 </div>
             </div>
             <div class="row my-4">
-                <MudTable T="CapaianLulusan" Items="CPL" Dense="true" Hover="true" Bordered="true" Outlined="true" Elevation="2" HeaderClass="header" Class="border-2">
+                <MudTable T="CapaianLulusan" Items="CPL" Dense="true" Hover="true" Bordered="true" Outlined="true" Elevation="2"
+                          HeaderClass="header" Class="border-2" Breakpoint="Breakpoint.None">
                     <ToolBarContent>
                         <MudText Typo="Typo.h6" Class="custom-table-title">@($"Capaian Lulusan Program Studi {ProgramStudi}")</MudText>
                     </ToolBarContent>
@@ -64,7 +65,8 @@
             @if(CapaianFiltered is not null && CapaianFiltered.Any())
             {
                 <div class="row my-4">
-                    <MudTable Items="CapaianFiltered" Dense="true" Hover="true" Bordered="true" Outlined="true" Striped="true" Elevation="2" HeaderClass="header" Class="border-2">
+                    <MudTable Items="CapaianFiltered" Dense="true" Hover="true" Bordered="true" Outlined="true" Striped="true" Elevation="2"
+                              HeaderClass="header" Class="border-2" Breakpoint="Breakpoint.None">
                         <ToolBarContent>
                             <MudText Typo="Typo.h6" Class="custom-table-title">Identitas Mata Kuliah</MudText>
                         </ToolBarContent>
