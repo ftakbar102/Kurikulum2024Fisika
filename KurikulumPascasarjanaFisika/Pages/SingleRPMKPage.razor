@@ -1,4 +1,4 @@
-﻿@page "/matakuliah/katalog/{ProgramStudi}/{KodeMK}"
+﻿@page "/katalog/{ProgramStudi}/{KodeMK}"
 
 @inject IKatalogService KatalogService
 @inject IRpmkGenerator RpmkGenerator
@@ -199,6 +199,6 @@
 
     public void BackToKatalog()
     {
-        Nav.NavigateTo($"/matakuliah/katalog");
+        Nav.NavigateTo($"katalog");
     }
 }

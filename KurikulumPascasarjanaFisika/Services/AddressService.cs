@@ -6,6 +6,7 @@
         {
             var baseAddress = programStudi switch
             {
+                "Sarjana Fisika" => "datasource/SarjanaFisika/SarjanaFisika",
                 "Magister Fisika" => "datasource/MagisterFisika/MagisterFisika",
                 "Magister Pengajaran Fisika" => "datasource/MagisterPengajaranFisika/MagisterPengajaranFisika",
                 "Doktor Fisika" => "datasource/DoktorFisika/DoktorFisika",
@@ -18,7 +19,7 @@
 
         public IEnumerable<string> GetAllProgramStudi()
         {
-            return ["Magister Fisika", "Magister Pengajaran Fisika", "Magister Rekayasa Nuklir", "Doktor Fisika"];
+            return ["Sarjana Fisika", "Magister Fisika", "Magister Pengajaran Fisika", "Magister Rekayasa Nuklir", "Doktor Fisika"];
         }
     }
 }

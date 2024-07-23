@@ -1,4 +1,4 @@
-﻿@page "/matakuliah/LCE"
+﻿@page "/LCE"
 
 @inject IKatalogService KatalogService
 @inject IAddressService AddressService
@@ -195,6 +195,9 @@
     {
         foreach(var mk in KatalogMataKuliah!)
         {
+            if (mk.Metode is null || mk.Penilaian is null)
+                continue;
+
             var metodes = mk.Metode.Split([',', '/']).Concat(mk.Penilaian.Split([','])).ToList();
             List<bool> kategori = [];
 

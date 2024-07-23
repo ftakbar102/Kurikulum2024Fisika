@@ -1,4 +1,4 @@
-﻿@page "/matakuliah/katalog"
+﻿@page "/katalog"
 
 @inject IKatalogService KatalogService
 @inject IAddressService AddressService
@@ -163,7 +163,7 @@
     public async void GoToRpmk(string kodeMK)
     {
         await Storage.SetItemAsStringAsync("Program Studi Katalog", ProgramStudi);
-        Nav.NavigateTo($"/matakuliah/katalog/{ProgramStudi}/{kodeMK}");
+        Nav.NavigateTo($"katalog/{ProgramStudi}/{kodeMK}");
     }
 
     
