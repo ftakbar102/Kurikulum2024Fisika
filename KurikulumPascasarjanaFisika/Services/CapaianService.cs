@@ -59,7 +59,7 @@ namespace KurikulumPascasarjanaFisika.Services
 
         }
 
-        public async Task<Dictionary<string, int>?> GetCapaianMataKuliah(string programStudi)
+        public async Task<Dictionary<string, int>?> GetCapaianMataKuliah(string programStudi, KategoriKuliah kategori = KategoriKuliah.Semua)
         {
             var baseAddress = _addressService.GetBaseAddress(programStudi);
 
@@ -70,9 +70,20 @@ namespace KurikulumPascasarjanaFisika.Services
             if (allCpl is null || allCpmk is null || katalogMataKuliah is null)
                 return null;
 
+            var katalogFiltered = kategori switch
+            {
+                KategoriKuliah.Semua => katalogMataKuliah.Select(x => x),
+                KategoriKuliah.Wajib => katalogMataKuliah.Where(x => x.Jenis == "MKWI" || x.Jenis == "MKWP"),
+                KategoriKuliah.Pilihan => katalogMataKuliah.Where(x => x.Jenis != "MKWI" && x.Jenis != "MKWP"),
+                _ => throw new Exception("Kategori tidak valid")
+            };
+
+
+            var cpmkFiltered = allCpmk.Where(x => katalogFiltered.Any(y => y.Kode == x.KodeMK));
+
             var capaian = new Dictionary<string, int>();
 
-            var group = allCpmk.GroupBy(x => x.KodeCPL).OrderBy(x => x.Key).ToList();
+            var group = cpmkFiltered.GroupBy(x => x.KodeCPL).OrderBy(x => x.Key).ToList();
 
             group.ForEach(x => capaian.Add(x.Key, x.GroupBy(y => y.KodeMK).Count()) );
 

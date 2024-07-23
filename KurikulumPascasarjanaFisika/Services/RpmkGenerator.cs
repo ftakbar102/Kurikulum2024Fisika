@@ -53,19 +53,5 @@ namespace KurikulumPascasarjanaFisika.Services
 
         }
 
-        public async Task<IEnumerable<RPMK>?> GetAllRpmk(string programStudi)
-        {
-            var baseAddress = programStudi switch
-            {
-                "Magister Fisika" => "datasource/MagisterFisika/MagisterFisika",
-                "Magister Pengajaran Fisika" => "datasource/MagisterPengajaranFisika/MagisterPengajaranFisika",
-                "Doktor Fisika" => "datasource/DoktorFisika/DoktorFisika",
-                _ => throw new Exception("Invalid Program Studi")
-            };
-
-            return null;
-
-        }
-
     }
 }

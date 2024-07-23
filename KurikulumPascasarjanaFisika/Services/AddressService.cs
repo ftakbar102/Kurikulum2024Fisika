@@ -10,7 +10,9 @@
                 "Magister Fisika" => "datasource/MagisterFisika/MagisterFisika",
                 "Magister Pengajaran Fisika" => "datasource/MagisterPengajaranFisika/MagisterPengajaranFisika",
                 "Doktor Fisika" => "datasource/DoktorFisika/DoktorFisika",
-                "Magister Rekayasa Nuklir" => "datasource/MagisterNuklir/MagisterNuklir",
+                "Magister Ilmu dan Rekayasa Nuklir" => "datasource/MagisterNuklir/MagisterNuklir",
+                "Magister Sains Komputasi" => "datasource/MagisterSainsKomputasi/MagisterSainsKomputasi",
+                "Doktor Rekayasa Nuklir" => "datasource/DoktorNuklir/DoktorNuklir",
                 _ => throw new Exception("Invalid Program Studi")
             };
 
@@ -19,7 +21,8 @@
 
         public IEnumerable<string> GetAllProgramStudi()
         {
-            return ["Sarjana Fisika", "Magister Fisika", "Magister Pengajaran Fisika", "Magister Rekayasa Nuklir", "Doktor Fisika"];
+            return ["Sarjana Fisika", "Magister Fisika", "Magister Pengajaran Fisika", "Magister Ilmu dan Rekayasa Nuklir", "Magister Sains Komputasi", 
+                "Doktor Fisika", "Doktor Rekayasa Nuklir"];
         }
     }
 }

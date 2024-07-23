@@ -18,7 +18,7 @@
                 <MudCard Outlined="true" Class="border-2" Elevation="2">
                     <MudCardHeader>
                         <CardHeaderContent>
-                            <MudText Typo="Typo.h5" Class="avenir fs-3 fw-bold">RPMK Mata Kuliah</MudText>
+                            <MudText Typo="Typo.h5" Class="avenir fs-3 fw-bold custom-page-title">RPMK Mata Kuliah</MudText>
                         </CardHeaderContent>
                     </MudCardHeader>
                 </MudCard>
@@ -31,7 +31,7 @@
                         @{
                             foreach (var prodi in AllProdi!)
                             {
-                                <MudSelectItem Value=@prodi />
+                                <MudSelectItem Class="custom-form-input" Value=@prodi />
                             }
                         }
                     </MudSelect>
@@ -40,6 +40,7 @@
                     <MudAutocomplete T="MataKuliah" Variant="Variant.Outlined" SearchFunc="FilterText" ToStringFunc="MataKuliahToString"
                                      Margin="Margin.Dense" Label="Cari Mata Kuliah" ResetValueOnEmptyText="true" CoerceText="true" Value="SelectedMataKuliah"
                                      Class="custom-form-input" Dense="true"
+                                     PopoverClass="custom-form-input"
                                      ValueChanged="async value => await ShowRpmk(value)"></MudAutocomplete>
                 </div>
             </div>
@@ -180,6 +181,20 @@
             font-size: 12px;
         }
 
+        .custom-form-input .mud-select-input {
+            font-size: 12px;
+        }
+
+        .custom-form-input .mud-input {
+            font-size: 12px;
+        }
+
+        .custom-form-input .mud-typography-body2{
+            font-size: 12px;
+        }
+
+    
+
     .mud-input-control > .mud-input-control-input-container > .mud-input-label-outlined.mud-input-label-inputcontrol {
         line-height: 1;
     }
@@ -195,6 +210,32 @@
             .selected > td .mud-input {
                 color: white !important;
             }
+
+    @@media (max-width :641px) {
+        .custom-table-header {
+            font-size: 9px;
+            line-height: 1.43 !important;
+        }
+
+        .custom-table-td {
+            font-size: 9px;
+            padding-left: 10px !important;
+            padding-right: 10px !important;
+        }
+
+        .custom-button-font {
+            font-size: 10px !important;
+        }
+
+        .custom-table-title {
+            font-size: 12px;
+            font-weight: bold !important;
+        }
+
+        .custom-page-title {
+            font-size: 15px !important;
+        }
+    }
 
 </style>
 

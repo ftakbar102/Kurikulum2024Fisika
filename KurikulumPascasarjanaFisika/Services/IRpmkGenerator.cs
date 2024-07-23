@@ -6,7 +6,5 @@ namespace KurikulumPascasarjanaFisika.Services
 	{
 		Task<RPMK?> GetRpmk(string kodeMK, string programStudi);
 
-		Task<IEnumerable<RPMK>?> GetAllRpmk(string programStudi);
-
 	}
 }

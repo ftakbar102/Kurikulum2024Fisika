@@ -16,7 +16,7 @@
                 <MudCard Outlined="true" Class="border-2" Elevation="2">
                     <MudCardHeader>
                         <CardHeaderContent>
-                            <MudText Typo="Typo.h5" Class="avenir fs-3 fw-bold">CPL Program Studi dan Mata Kuliah</MudText>
+                            <MudText Typo="Typo.h5" Class="avenir fs-3 fw-bold custom-page-title">CPL Program Studi dan Mata Kuliah</MudText>
                         </CardHeaderContent>
                     </MudCardHeader>
                 </MudCard>
@@ -29,7 +29,7 @@
                         @{
                             foreach (var prodi in AllProdi!)
                             {
-                                <MudSelectItem Value=@prodi />
+                                <MudSelectItem Class="custom-form-input" Value=@prodi />
                             }
                         }
                     </MudSelect>
@@ -38,11 +38,11 @@
                     <MudSelect T="string" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" Margin="Margin.Dense"
                                Class="custom-form-input" Dense="true" Label="Jenis Mata Kuliah" Value="JenisMK"
                                ValueChanged="value => ChangeJenisMK(value)">
-                        <MudSelectItem Value="@("Semua")" />
-                        <MudSelectItem Value="@("MKWI")" />
-                        <MudSelectItem Value="@("MKWP")" />
-                        <MudSelectItem Value="@("MKPB")" />
-                        <MudSelectItem Value="@("MKOP")" />
+                        <MudSelectItem Value="@("Semua")" Class="custom-form-input" />
+                        <MudSelectItem Value="@("MKWI")" Class="custom-form-input" />
+                        <MudSelectItem Value="@("MKWP")" Class="custom-form-input" />
+                        <MudSelectItem Value="@("MKPB")" Class="custom-form-input" />
+                        <MudSelectItem Value="@("MKOP")" Class="custom-form-input" />
                     </MudSelect>
                 </div>
             </div>
@@ -143,6 +143,14 @@
             font-size: 12px;
         }
 
+        .custom-form-input .mud-select-input {
+            font-size: 12px;
+        }
+
+        .custom-form-input .mud-input {
+            font-size: 12px;
+        }
+
     .mud-input-control > .mud-input-control-input-container > .mud-input-label-outlined.mud-input-label-inputcontrol {
         line-height: 1;
     }
@@ -158,6 +166,32 @@
             .selected > td .mud-input {
                 color: white !important;
             }
+
+    @@media (max-width :641px) {
+        .custom-table-header {
+            font-size: 9px;
+            line-height: 1.43 !important;
+        }
+
+        .custom-table-td {
+            font-size: 9px;
+            padding-left: 10px !important;
+            padding-right: 10px !important;
+        }
+
+        .custom-button-font {
+            font-size: 10px !important;
+        }
+
+        .custom-table-title {
+            font-size: 12px;
+            font-weight: bold !important;
+        }
+
+        .custom-page-title {
+            font-size: 15px !important;
+        }
+    }
 
 </style>
 
