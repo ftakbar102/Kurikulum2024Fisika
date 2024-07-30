@@ -1,0 +1,103 @@
+/* /Components/Layout/MainLayout.razor.rz.scp.css */
+#blazor-error-ui[b-kmsvkfhyti] {
+    background: lightyellow;
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+    #blazor-error-ui .dismiss[b-kmsvkfhyti] {
+        cursor: pointer;
+        position: absolute;
+        right: 0.75rem;
+        top: 0.5rem;
+    }
+
+.page[b-kmsvkfhyti] {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+main[b-kmsvkfhyti] {
+    flex: 1;
+}
+
+.sidebar[b-kmsvkfhyti] {
+    background-color: #212B3E;
+    min-width: 250px;
+}
+
+.top-row[b-kmsvkfhyti] {
+    background-color: #212B3E;
+    border-bottom: 1px solid #d6d5d5;
+    justify-content: flex-end;
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
+}
+
+    .top-row[b-kmsvkfhyti]  a, .top-row[b-kmsvkfhyti]  .btn-link {
+        white-space: nowrap;
+        margin-left: 1.5rem;
+        text-decoration: none;
+    }
+
+        .top-row[b-kmsvkfhyti]  a:hover, .top-row[b-kmsvkfhyti]  .btn-link:hover {
+            text-decoration: underline;
+        }
+
+        .top-row[b-kmsvkfhyti]  a:first-child {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+@media (max-width: 991.98px) {
+    .top-row:not(.auth)[b-kmsvkfhyti] {
+        display: none;
+    }
+
+    .top-row.auth[b-kmsvkfhyti] {
+        justify-content: space-between;
+    }
+
+    .top-row[b-kmsvkfhyti]  a, .top-row[b-kmsvkfhyti]  .btn-link {
+        margin-left: 0;
+    }
+}
+
+@media (min-width: 992px) {
+    .page[b-kmsvkfhyti] {
+        flex-direction: row;
+    }
+
+    .sidebar[b-kmsvkfhyti] {
+        width: 250px;
+        height: 100vh;
+        position: sticky;
+        top: 0;
+    }
+
+    .top-row[b-kmsvkfhyti] {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    .top-row[b-kmsvkfhyti], article[b-kmsvkfhyti] {
+        padding-left: 2rem !important;
+        padding-right: 1.5rem !important;
+    }
+}
+/* /Components/Layout/NavMenu.razor.rz.scp.css */
+/* /Components/Shared/LoadingPageComponent.razor.rz.scp.css */
+.loading-label[b-sngkcl4xf9] {
+    font-family: 'Avenir Next LT Pro';
+    font-size: 1.2rem;
+    font-weight: bold;
+}

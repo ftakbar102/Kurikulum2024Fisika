@@ -1,0 +1,41 @@
+﻿.now-bold {
+    font-family: Now;
+    font-weight: 600;
+}
+
+.now-regular {
+    font-family: Now;
+    font-weight: 400;
+}
+
+.now-black {
+    font-family: Now;
+    font-weight: 700;
+}
+
+.now-thin {
+    font-family: Now;
+    font-weight: 200;
+}
+
+.now-medium {
+    font-family: Now;
+    font-weight: 500;
+}
+
+.now-light {
+    font-family: Now;
+    font-weight: 300;
+}
+
+.avenir {
+    font-family: Avenir;
+}
+
+.avenir-demi {
+    font-family: Avenir-Demi;
+}
+
+.avenir-condensed {
+    font-family: Avenir-Condensed;
+}
