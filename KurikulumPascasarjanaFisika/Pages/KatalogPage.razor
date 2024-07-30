@@ -186,7 +186,7 @@
         FilteredMataKuliah = KatalogMataKuliah.Where(x => x.Kode.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
         x.NamaId.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
         x.NamaEn.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
-        x.Jenis.Contains(SearchText, StringComparison.OrdinalIgnoreCase));
+        x.Jenis.ToString().Contains(SearchText, StringComparison.OrdinalIgnoreCase));
     }
 
     public async void GoToRpmk(string kodeMK)

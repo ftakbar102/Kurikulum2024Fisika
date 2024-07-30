@@ -9,7 +9,7 @@ namespace KurikulumPascasarjanaFisika.Services
         private readonly IKatalogService _katalogService = katalogService;
         private readonly IAddressService _addressService = addressService;
 
-        public async Task<IEnumerable<CapaianLulusan>?> GetCPL(string programStudi)
+        public async Task<IEnumerable<CapaianLulusan>?> GetCPLProdi(string programStudi)
         {
             var baseAddress = _addressService.GetBaseAddress(programStudi);
 
@@ -20,51 +20,45 @@ namespace KurikulumPascasarjanaFisika.Services
         {
             var baseAddress = _addressService.GetBaseAddress(programStudi);
 
-            var allCpl = await GetCPL(programStudi);
+            var allCpl = await GetCPLProdi(programStudi);
             var allCpmk = await _client.GetFromJsonAsync<IEnumerable<CapaianMataKuliah>>($"{baseAddress}CPMK.json");
 
             if (allCpl is null || allCpmk is null)
                 return null;
 
-            var cpmk = allCpmk.Where(x => x.KodeMK == kodeMK);
-            foreach (var cp in cpmk)
-            {
-                cp.CPL = allCpl.First(x => x.KodeCPL == cp.KodeCPL);
-            }
+            var cpmk = allCpmk.Where(x => x.KodeMK == kodeMK)
+                .Select(y => y with { CPL = allCpl.First(z => z.KodeCPL == y.KodeCPL) });
 
             return cpmk;
 
         }
 
-        public async Task<Dictionary<MataKuliah, IEnumerable<bool>>?> GetCapaianMapping(string programStudi)
+        public async Task<Dictionary<MataKuliah, IEnumerable<bool>>?> GetCapaianMataKuliahMapping(string programStudi)
         {
             var baseAddress = _addressService.GetBaseAddress(programStudi);
 
             var katalogMataKuliah = await _katalogService.GetKatalog(programStudi);
-            var allCpl = await GetCPL(programStudi);
+            var allCpl = await GetCPLProdi(programStudi);
             var allCpmk = await _client.GetFromJsonAsync<IEnumerable<CapaianMataKuliah>>($"{baseAddress}CPMK.json");
 
             if (allCpl is null || allCpmk is null || katalogMataKuliah is null)
                 return null;
 
-            var capaianMapping = new Dictionary<MataKuliah, IEnumerable<bool>>();
-
-            katalogMataKuliah.ToList().ForEach(x =>
-            {
-                var cpmk = allCpmk.Where(y => y.KodeMK == x.Kode);
-                capaianMapping.Add(x, GetDukunganCapaian(cpmk is not null ? cpmk : [], allCpl));
-            });
-
-            return capaianMapping;
-
+            return katalogMataKuliah.ToDictionary(x => x,
+                x =>
+                {
+                    var capaianMap = allCpmk.Where(y => y.KodeMK == x.Kode).Select(x => x.KodeCPL).Distinct().ToList();
+                    return allCpl.Select(x => capaianMap.Contains(x.KodeCPL));
+                }
+            );
         }
 
-        public async Task<Dictionary<string, int>?> GetCapaianMataKuliah(string programStudi, KategoriKuliah kategori = KategoriKuliah.Semua)
+        public async Task<Dictionary<string, int>?> JumlahMataKuliahPerCapaian(string programStudi, KategoriMataKuliah kategori = KategoriMataKuliah.Semua)
         {
             var baseAddress = _addressService.GetBaseAddress(programStudi);
 
             var katalogMataKuliah = await _katalogService.GetKatalog(programStudi);
-            var allCpl = await GetCPL(programStudi);
+            var allCpl = await GetCPLProdi(programStudi);
             var allCpmk = await _client.GetFromJsonAsync<IEnumerable<CapaianMataKuliah>>($"{baseAddress}CPMK.json");
 
             if (allCpl is null || allCpmk is null || katalogMataKuliah is null)
@@ -72,33 +66,17 @@ namespace KurikulumPascasarjanaFisika.Services
 
             var katalogFiltered = kategori switch
             {
-                KategoriKuliah.Semua => katalogMataKuliah.Select(x => x),
-                KategoriKuliah.Wajib => katalogMataKuliah.Where(x => x.Jenis == "MKWI" || x.Jenis == "MKWP"),
-                KategoriKuliah.Pilihan => katalogMataKuliah.Where(x => x.Jenis != "MKWI" && x.Jenis != "MKWP"),
+                KategoriMataKuliah.Semua => katalogMataKuliah.Select(x => x),
+                KategoriMataKuliah.Wajib => katalogMataKuliah.Where(x => x.Jenis == JenisMataKuliah.MKWI || x.Jenis == JenisMataKuliah.MKWP),
+                KategoriMataKuliah.Pilihan => katalogMataKuliah.Where(x => x.Jenis != JenisMataKuliah.MKWI && x.Jenis != JenisMataKuliah.MKWP),
                 _ => throw new Exception("Kategori tidak valid")
             };
 
 
-            var cpmkFiltered = allCpmk.Where(x => katalogFiltered.Any(y => y.Kode == x.KodeMK));
-
-            var capaian = new Dictionary<string, int>();
-
-            var group = cpmkFiltered.GroupBy(x => x.KodeCPL).OrderBy(x => x.Key).ToList();
-
-            group.ForEach(x => capaian.Add(x.Key, x.GroupBy(y => y.KodeMK).Count()) );
-
-            return capaian;
+            return allCpmk.Where(cpmk => katalogFiltered.Any(mk => mk.Kode == cpmk.KodeMK))
+                .GroupBy(cpmk => cpmk.KodeCPL)
+                .OrderBy(group => group.Key)
+                .ToDictionary(x => x.Key, y => y.GroupBy(cpmk => cpmk.KodeMK).Count());
         }
-
-        private IEnumerable<bool> GetDukunganCapaian(IEnumerable<CapaianMataKuliah> cpmk, IEnumerable<CapaianLulusan> cpl)
-        {
-            var capaianMap = cpmk.Select(x => x.KodeCPL).Distinct();
-
-            return cpl.Select(x => capaianMap.Contains(x.KodeCPL));
-
-        }
-
-
-
     }
 }

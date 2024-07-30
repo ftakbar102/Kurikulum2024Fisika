@@ -39,10 +39,12 @@
                                Class="custom-form-input" Dense="true" Label="Jenis Mata Kuliah" Value="JenisMK"
                                ValueChanged="value => ChangeJenisMK(value)">
                         <MudSelectItem Value="@("Semua")" Class="custom-form-input" />
-                        <MudSelectItem Value="@("MKWI")" Class="custom-form-input" />
-                        <MudSelectItem Value="@("MKWP")" Class="custom-form-input" />
-                        <MudSelectItem Value="@("MKPB")" Class="custom-form-input" />
-                        <MudSelectItem Value="@("MKOP")" Class="custom-form-input" />
+                        @{
+                            foreach (var jk in Enum.GetValues(typeof(JenisMataKuliah)))
+                            {
+                                <MudSelectItem Value="@(jk.ToString())" Class="custom-form-input" />
+                            }
+                        }
                     </MudSelect>
                 </div>
             </div>
@@ -213,8 +215,8 @@
 
         ProgramStudi = getProdi is not null ? getProdi : "Magister Fisika";
         
-        CapaianSource = await CapaianService.GetCapaianMapping(ProgramStudi);
-        CPL = await CapaianService.GetCPL(ProgramStudi);
+        CapaianSource = await CapaianService.GetCapaianMataKuliahMapping(ProgramStudi);
+        CPL = await CapaianService.GetCPLProdi(ProgramStudi);
 
         if (CapaianSource is null || CPL is null)
             return;
@@ -230,8 +232,8 @@
         await Storage.SetItemAsStringAsync("Program Studi Capaian", ProgramStudi);
 
         JenisMK = "Semua";
-        CapaianSource = await CapaianService.GetCapaianMapping(ProgramStudi);
-        CPL = await CapaianService.GetCPL(ProgramStudi);
+        CapaianSource = await CapaianService.GetCapaianMataKuliahMapping(ProgramStudi);
+        CPL = await CapaianService.GetCPLProdi(ProgramStudi);
 
         if (CapaianSource is null || CPL is null)
             return;
@@ -250,7 +252,7 @@
         }
         else
         {
-            CapaianFiltered = CapaianSource is not null ? CapaianSource.Where(x => x.Key.Jenis == value).ToDictionary() : null;
+            CapaianFiltered = CapaianSource is not null ? CapaianSource.Where(x => x.Key.Jenis == (JenisMataKuliah)Enum.Parse(typeof(JenisMataKuliah), value)).ToDictionary() : null;
         }
 
     }

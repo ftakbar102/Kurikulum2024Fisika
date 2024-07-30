@@ -28,16 +28,14 @@ namespace KurikulumPascasarjanaFisika.Services
         public async Task<Dictionary<string, int>?> GetMataKuliahByJenis(string programStudi)
         {
             var allKatalog = await GetKatalog(programStudi);
+            
             if (allKatalog is null)
                 return null;
 
-            var matakuliahbyjenis = new Dictionary<string, int>();
+            return allKatalog.GroupBy(x => x.Jenis.ToString())
+                .OrderByDescending(x => x.Key)
+                .ToDictionary(x => x.Key, y => y.Count());
 
-            var group = allKatalog.GroupBy(x => x.Jenis).OrderByDescending(x => x.Key).ToList();
-
-            group.ForEach(x => matakuliahbyjenis.Add(x.Key, x.Count()));
-
-            return matakuliahbyjenis.ToDictionary();
         }
     }
 }

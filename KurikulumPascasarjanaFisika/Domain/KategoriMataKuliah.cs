@@ -1,6 +1,6 @@
 ﻿namespace KurikulumPascasarjanaFisika.Domain
 {
-    public enum KategoriKuliah
+    public enum KategoriMataKuliah
     {
         Semua,
         Wajib,

@@ -4,9 +4,9 @@ namespace KurikulumPascasarjanaFisika.Services
 {
     public interface ICapaianService
     {
-        Task<Dictionary<MataKuliah, IEnumerable<bool>>?> GetCapaianMapping(string programStudi);
-        Task<Dictionary<string, int>?> GetCapaianMataKuliah(string programStudi, KategoriKuliah kategori = KategoriKuliah.Semua);
-        Task<IEnumerable<CapaianLulusan>?> GetCPL(string programStudi);
+        Task<Dictionary<MataKuliah, IEnumerable<bool>>?> GetCapaianMataKuliahMapping(string programStudi);
+        Task<Dictionary<string, int>?> JumlahMataKuliahPerCapaian(string programStudi, KategoriMataKuliah kategori = KategoriMataKuliah.Semua);
+        Task<IEnumerable<CapaianLulusan>?> GetCPLProdi(string programStudi);
         Task<IEnumerable<CapaianMataKuliah>?> GetCPMK(string kodeMK, string programStudi);
     }
 }

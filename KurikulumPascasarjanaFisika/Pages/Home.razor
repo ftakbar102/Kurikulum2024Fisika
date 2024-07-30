@@ -151,10 +151,11 @@
 
         ProgramStudi = getProdi is not null ? getProdi : "Magister Fisika";
         KatalogSource = await KatalogService.GetMataKuliahByJenis(ProgramStudi);
-        CapaianWajibSource = await CapaianService.GetCapaianMataKuliah(ProgramStudi, KategoriKuliah.Wajib);
-        CapaianPilihanSource = await CapaianService.GetCapaianMataKuliah(ProgramStudi, KategoriKuliah.Pilihan);
+        CapaianWajibSource = await CapaianService.JumlahMataKuliahPerCapaian(ProgramStudi, KategoriMataKuliah.Wajib);
+        CapaianPilihanSource = await CapaianService.JumlahMataKuliahPerCapaian(ProgramStudi, KategoriMataKuliah.Pilihan);
 
         StackBarOption = SetChartOption();
+        
     }
 
     public async Task ChangeProgramStudi(string value)
@@ -163,8 +164,8 @@
         await Storage.SetItemAsStringAsync("Program Studi Home", ProgramStudi);
 
         KatalogSource = await KatalogService.GetMataKuliahByJenis(ProgramStudi);
-        CapaianWajibSource = await CapaianService.GetCapaianMataKuliah(ProgramStudi, KategoriKuliah.Wajib);
-        CapaianPilihanSource = await CapaianService.GetCapaianMataKuliah(ProgramStudi, KategoriKuliah.Pilihan);
+        CapaianWajibSource = await CapaianService.JumlahMataKuliahPerCapaian(ProgramStudi, KategoriMataKuliah.Wajib);
+        CapaianPilihanSource = await CapaianService.JumlahMataKuliahPerCapaian(ProgramStudi, KategoriMataKuliah.Pilihan);
         StateHasChanged();
         await JenisChart.UpdateSeriesAsync();
         await CapaianChart.UpdateSeriesAsync();

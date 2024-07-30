@@ -40,10 +40,12 @@
                                Class="custom-form-input" Dense="true" Label="Jenis Mata Kuliah" Value="JenisMK"
                                ValueChanged="value => ChangeJenisMK(value)">
                         <MudSelectItem Value="@("Semua")" Class="custom-form-input" />
-                        <MudSelectItem Value="@("MKWI")" Class="custom-form-input" />
-                        <MudSelectItem Value="@("MKWP")" Class="custom-form-input" />
-                        <MudSelectItem Value="@("MKPB")" Class="custom-form-input" />
-                        <MudSelectItem Value="@("MKOP")" Class="custom-form-input" />
+                        @{
+                            foreach(var jk in Enum.GetValues(typeof(JenisMataKuliah)))
+                            {
+                                <MudSelectItem Value="@(jk.ToString())" Class="custom-form-input" />
+                            }
+                        }
                     </MudSelect>
                 </div>
             </div>
@@ -216,7 +218,7 @@
         }
         else
         {
-            LCEMKFiltered = LCEMK is not null ? LCEMK.Where(x => x.Key.Jenis == value).ToDictionary() : null;
+            LCEMKFiltered = LCEMK is not null ? LCEMK.Where(x => x.Key.Jenis == (JenisMataKuliah)Enum.Parse(typeof(JenisMataKuliah), value)).ToDictionary() : null;
         }
 
     }
@@ -225,10 +227,21 @@
     {
         foreach(var mk in KatalogMataKuliah!)
         {
-            if (mk.Metode is null || mk.Penilaian is null)
+            if (mk.Metode is null && mk.Penilaian is null && mk.Modalitas is null)
                 continue;
 
-            var metodes = mk.Metode.Split([',', '/']).Concat(mk.Penilaian.Split([','])).ToList();
+            List<string> metodes = [];
+
+            if (mk.Metode is not null)
+                metodes.AddRange(mk.Metode.Split([',', '/']));
+
+            if (mk.Penilaian is not null)
+                metodes.AddRange(mk.Penilaian.Split([',']));
+
+            if(mk.Modalitas is not null)
+                metodes.AddRange(mk.Modalitas.Split([',']));
+
+
             List<bool> kategori = [];
 
             foreach(var val in KategoriLCE.Values)
